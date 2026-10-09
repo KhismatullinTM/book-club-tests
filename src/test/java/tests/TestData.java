@@ -21,5 +21,8 @@ public class TestData {
     public static final String LOGIN_EMPTY_PASSWORD = "";
 
     public static final String EXPECTED_EMPTY_CREDENTIAL_ERROR = "This field may not be blank.";
+
+    public static final String REGISTRATION_EMPTY_USERNAME = "";
+    public static final String REGISTRATION_EMPTY_PASSWORD = "";
 }
 
