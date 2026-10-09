@@ -1,15 +1,13 @@
 package api;
 
 import io.qameta.allure.Step;
-import models.login.LoginBodyModel;
-import models.login.SuccessfulLoginResponseModel;
-import models.login.WrongCredentialsLoginResponseModel;
+import models.login.*;
 import models.logout.LogoutBodyModel;
 
+import java.util.List;
+
 import static io.restassured.RestAssured.given;
-import static specs.login.LoginSpec.loginRequestSpec;
-import static specs.login.LoginSpec.successfulLoginResponseSpec;
-import static specs.login.LoginSpec.wrongCredentialsLoginResponseSpec;
+import static specs.login.LoginSpec.*;
 import static specs.logout.LogoutSpec.logoutRequestSpec;
 import static specs.logout.LogoutSpec.successfulLogoutResponseSpec;
 
@@ -57,6 +55,28 @@ public class AuthApiClient {
                 .post("/auth/logout/")
                 .then()
                 .spec(successfulLogoutResponseSpec);
+    }
+
+    public EmptyLoginCredentialLoginResponseModel loginEmptyCredentials(LoginBodyModel loginBody) {
+        return given(loginRequestSpec)
+                .body(loginBody)
+                .when()
+                .post("/auth/token/")
+                .then()
+                .spec(emptyLoginCredentialsLoginResponseSpec)
+                .extract()
+                .as(EmptyLoginCredentialLoginResponseModel.class);
+    }
+
+    public EmptyPasswordCredentialLoginResponseModel passwordEmptyCredentials(LoginBodyModel loginBody) {
+        return given(loginRequestSpec)
+                .body(loginBody)
+                .when()
+                .post("/auth/token/")
+                .then()
+                .spec(emptyPasswordCredentialsLoginResponseSpec)
+                .extract()
+                .as(EmptyPasswordCredentialLoginResponseModel.class);
     }
 }
 

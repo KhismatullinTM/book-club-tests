@@ -15,5 +15,11 @@ public class TestData {
     public static final String REGISTRATION_IP_REGEXP =
             "^((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.){3}"
                     + "(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)$";
+
+    public static final String LOGIN_NONEXISTENT_USERNAME = "nonexistent_user_12345";
+    public static final String LOGIN_EMPTY_USERNAME = "";
+    public static final String LOGIN_EMPTY_PASSWORD = "";
+
+    public static final String EXPECTED_EMPTY_CREDENTIAL_ERROR = "This field may not be blank.";
 }
 
