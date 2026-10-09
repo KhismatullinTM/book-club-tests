@@ -2,14 +2,13 @@ package api;
 
 import io.qameta.allure.Step;
 import models.login.*;
+import models.logout.EmptyRefreshTokenModel;
 import models.logout.LogoutBodyModel;
-
-import java.util.List;
+import models.logout.NotValidTokenResponseModel;
 
 import static io.restassured.RestAssured.given;
 import static specs.login.LoginSpec.*;
-import static specs.logout.LogoutSpec.logoutRequestSpec;
-import static specs.logout.LogoutSpec.successfulLogoutResponseSpec;
+import static specs.logout.LogoutSpec.*;
 
 public class AuthApiClient {
 
@@ -77,6 +76,28 @@ public class AuthApiClient {
                 .spec(emptyPasswordCredentialsLoginResponseSpec)
                 .extract()
                 .as(EmptyPasswordCredentialLoginResponseModel.class);
+    }
+
+    public NotValidTokenResponseModel logoutWithInvalidToken(LogoutBodyModel logoutBody) {
+        return given(logoutRequestSpec)
+                .body(logoutBody)
+                .when()
+                .post("/auth/logout/")
+                .then()
+                .spec(notValidTokenResponseSpec)
+                .extract()
+                .as(NotValidTokenResponseModel.class);
+    }
+
+    public EmptyRefreshTokenModel logoutWithEmptyRefreshToken(LogoutBodyModel logoutBody) {
+        return given(logoutRequestSpec)
+                .body(logoutBody)
+                .when()
+                .post("/auth/logout/")
+                .then()
+                .spec(emptyRefreshTokenResponseSpec)
+                .extract()
+                .as(EmptyRefreshTokenModel.class);
     }
 }
 
