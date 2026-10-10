@@ -2,10 +2,12 @@ package tests;
 
 import models.login.LoginBodyModel;
 import models.login.SuccessfulLoginResponseModel;
+import models.registration.RegistrationBodyModel;
 import models.update_user.UpdateUserPatchBodyModel;
 import models.update_user.UpdateUserPatchResponseModel;
 import models.update_user.UpdateUserPutBodyModel;
 import models.update_user.UpdateUserPutResponseModel;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,23 +15,42 @@ import static tests.TestData.*;
 
 public class UpdateUserTests extends TestBase {
 
-    @Test
-    public void successfulPathUpdateUserTest(){
+    private String username;
+    private String password;
+    private String accessToken;
 
-        LoginBodyModel loginData = new LoginBodyModel(LOGIN_USERNAME, LOGIN_PASSWORD);
+    @BeforeEach
+    public void prepareTestData() {
+
+        username = "user_" + System.currentTimeMillis();
+        password = "pass_" + System.currentTimeMillis();
+        RegistrationBodyModel registrationData =
+                new RegistrationBodyModel(username, password);
+        api.users.register(registrationData);
+
+        LoginBodyModel loginData = new LoginBodyModel(username, password);
         SuccessfulLoginResponseModel loginResponse = api.auth.login(loginData);
-        String accessToken = loginResponse.access();
+
+        accessToken = loginResponse.access();
+    }
+
+
+    @Test
+    public void successfulPutUpdateUserTest() {
+        String updatedUsername = "updatedUser_" + System.currentTimeMillis();
 
         UpdateUserPutBodyModel updateUserBodyModel = new UpdateUserPutBodyModel(
-                UPDATE_USERNAME,
+                updatedUsername,
                 UPDATE_FIRST_NAME,
                 UPDATE_LAST_NAME,
-                UPDATE_EMAIL);
+                UPDATE_EMAIL
+        );
 
-        UpdateUserPutResponseModel updateUserResponse = api.users.putUpdateUser(updateUserBodyModel, accessToken);
+        UpdateUserPutResponseModel updateUserResponse =
+                api.users.putUpdateUser(updateUserBodyModel, accessToken);
 
         assertThat(updateUserResponse.id()).isGreaterThan(0);
-        assertThat(updateUserResponse.username()).isEqualTo(UPDATE_USERNAME);
+        assertThat(updateUserResponse.username()).isEqualTo(updatedUsername);
         assertThat(updateUserResponse.firstName()).isEqualTo(UPDATE_FIRST_NAME);
         assertThat(updateUserResponse.lastName()).isEqualTo(UPDATE_LAST_NAME);
         assertThat(updateUserResponse.email()).isEqualTo(UPDATE_EMAIL);
@@ -37,13 +58,7 @@ public class UpdateUserTests extends TestBase {
     }
 
     @Test
-
     public void successfulPatchUpdateUserTest() {
-
-        LoginBodyModel loginData = new LoginBodyModel(LOGIN_USERNAME, LOGIN_PASSWORD);
-        SuccessfulLoginResponseModel loginResponse = api.auth.login(loginData);
-        String accessToken = loginResponse.access();
-
         UpdateUserPatchBodyModel updateUserBodyModel =
                 new UpdateUserPatchBodyModel(UPDATE_FIRST_NAME);
 
