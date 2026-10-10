@@ -29,5 +29,19 @@ public class LoginSpec {
             .expectBody("detail", notNullValue())
             .build();
 
+    public static ResponseSpecification emptyLoginCredentialsLoginResponseSpec = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(400)
+            .expectBody(matchesJsonSchemaInClasspath(
+                    "schemas/login/empty_username_login_test_schema.json"))
+            .expectBody("username", notNullValue())
+            .build();
 
+    public static ResponseSpecification emptyPasswordCredentialsLoginResponseSpec = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(400)
+            .expectBody(matchesJsonSchemaInClasspath(
+                    "schemas/login/empty_password_in_login_test_schema.json"))
+            .expectBody("password", notNullValue())
+            .build();
 }

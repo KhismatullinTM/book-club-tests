@@ -1,14 +1,11 @@
 package tests;
 
-import models.registration.ExistingUserResponseModel;
-import models.registration.RegistrationBodyModel;
-import models.registration.SuccessfulRegistrationResponseModel;
+import models.registration.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static tests.TestData.REGISTRATION_EXISTING_USER_ERROR;
-import static tests.TestData.REGISTRATION_IP_REGEXP;
+import static tests.TestData.*;
 
 public class RegistrationTests extends TestBase {
 
@@ -55,6 +52,29 @@ public class RegistrationTests extends TestBase {
         assertThat(actualError).isEqualTo(expectedError);
     }
 
-    // todo add more negative tests
+    @Test
+    public void emptyUsernameRegistrationTest() {
+        RegistrationBodyModel registrationData =
+                new RegistrationBodyModel("", password);
+
+        EmptyUsernameRegistrationResponseModel response =
+                api.users.registerWithEmptyUsername(registrationData);
+
+        assertThat(response.username())
+                .containsExactly(EXPECTED_EMPTY_CREDENTIAL_ERROR);
+    }
+
+    @Test
+    public void emptyPasswordRegistrationTest() {
+        RegistrationBodyModel registrationData =
+                new RegistrationBodyModel(username, "");
+
+        EmptyPasswordRegistrationResponseModel response =
+                api.users.registerWithEmptyPassword(registrationData);
+
+        assertThat(response.password())
+                .containsExactly(EXPECTED_EMPTY_CREDENTIAL_ERROR);
+    }
+
 
 }
