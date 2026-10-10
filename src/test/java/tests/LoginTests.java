@@ -10,6 +10,7 @@ public class LoginTests extends TestBase {
 
     @Test
     public void successfulLoginTest() {
+
         LoginBodyModel loginData = new LoginBodyModel(LOGIN_USERNAME, LOGIN_PASSWORD);
 
         SuccessfulLoginResponseModel loginResponse = api.auth.login(loginData);
