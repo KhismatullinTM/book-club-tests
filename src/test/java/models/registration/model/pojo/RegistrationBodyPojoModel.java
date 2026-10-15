@@ -1,4 +1,4 @@
-package models.registration.model_examples.pojo;
+package models.registration.model.pojo;
 
 public class RegistrationBodyPojoModel {
     String username;
