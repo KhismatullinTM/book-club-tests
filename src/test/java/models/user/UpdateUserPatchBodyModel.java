@@ -1,4 +1,4 @@
-package models.update_user;
+package models.user;
 
 public record UpdateUserPatchBodyModel(String firstName) {
 }

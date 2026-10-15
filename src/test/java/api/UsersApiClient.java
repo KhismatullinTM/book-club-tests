@@ -1,10 +1,10 @@
 package api;
 
 import models.registration.*;
-import models.update_user.UpdateUserPatchBodyModel;
-import models.update_user.UpdateUserPatchResponseModel;
-import models.update_user.UpdateUserPutBodyModel;
-import models.update_user.UpdateUserPutResponseModel;
+import models.user.UpdateUserPatchBodyModel;
+import models.user.UpdateUserPatchResponseModel;
+import models.user.UpdateUserPutBodyModel;
+import models.user.UpdateUserPutResponseModel;
 
 import static io.restassured.RestAssured.given;
 import static specs.UpdateUser.UpdateUserSpec.successfulUpdateUserResponseSpec;
