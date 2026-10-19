@@ -1,6 +1,7 @@
-package tests;
+package tests.testdata;
 
 public class TestData {
+
 
     public static final String LOGIN_USERNAME = "user_1791600701072";
     public static final String LOGIN_PASSWORD = "pass_1791600701073";
@@ -26,5 +27,11 @@ public class TestData {
     public static final String UPDATE_FIRST_NAME = "Test";
     public static final String UPDATE_LAST_NAME = "User";
     public static final String UPDATE_EMAIL = "updated.user@example.com";
+    public static final String CLUB_TELEGRAM_LINK = "https://t.me/clean_code_club";
+
+    public static final int CLUBS_ID = 6398;
+    public static final int CLUB_ID_FORBIDDEN_TO_EDIT = 40;
+    public static final String FORBIDDEN_ERROR_TEXT = "You do not have permission to perform this action";
+
 }
 

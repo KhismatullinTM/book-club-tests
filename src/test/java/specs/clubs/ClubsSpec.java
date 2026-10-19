@@ -6,8 +6,7 @@ import io.restassured.specification.ResponseSpecification;
 
 import static io.restassured.filter.log.LogDetail.ALL;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static specs.BaseSpec.baseRequestSpec;
 
 public class ClubsSpec {
@@ -22,5 +21,56 @@ public class ClubsSpec {
             .expectBody("count", notNullValue())
             .expectBody("count", greaterThanOrEqualTo(0))
             .expectBody("results", notNullValue())
+            .build();
+
+    public static ResponseSpecification successfulClubsByIdResponseSpec = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(200)
+            .expectBody(matchesJsonSchemaInClasspath(
+                    "schemas/clubs/get_clubs_by_id_response_schema.json"))
+            .expectBody("id", notNullValue())
+            .expectBody("bookTitle", notNullValue())
+            .expectBody("bookAuthors", notNullValue())
+            .expectBody("publicationYear", notNullValue())
+            .expectBody("description", notNullValue())
+            .expectBody("telegramChatLink", notNullValue())
+            .expectBody("owner", notNullValue())
+            .expectBody("members", notNullValue())
+            .expectBody("reviews", notNullValue())
+            .expectBody("created", notNullValue())
+            .build();
+
+    public static ResponseSpecification successfulUpdateClubByIdResponseSpec = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(200)
+            .expectBody(matchesJsonSchemaInClasspath(
+                    "schemas/clubs/get_clubs_by_id_response_schema.json"))
+            .expectBody("id", notNullValue())
+            .expectBody("bookTitle", notNullValue())
+            .expectBody("bookAuthors", notNullValue())
+            .expectBody("publicationYear", notNullValue())
+            .expectBody("description", notNullValue())
+            .expectBody("telegramChatLink", notNullValue())
+            .build();
+
+    public static ResponseSpecification successfulCreateClubResponseSpec = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(201)
+            .expectBody(matchesJsonSchemaInClasspath(
+                    "schemas/clubs/post_create_club_response_schema.json"))
+            .expectBody("id", greaterThan(0))
+            .expectBody("bookTitle", notNullValue())
+            .expectBody("bookAuthors", notNullValue())
+            .expectBody("publicationYear", notNullValue())
+            .expectBody("description", notNullValue())
+            .expectBody("telegramChatLink", notNullValue())
+            .build();
+
+    public static ResponseSpecification forbiddenErrorResponseSpec = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(403)
+            .expectBody(matchesJsonSchemaInClasspath(
+                    "schemas/clubs/forbidden_schema.json"))
+            .expectBody("detail", notNullValue())
             .build();
 }
