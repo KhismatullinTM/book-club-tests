@@ -35,6 +35,18 @@ public class AuthApiClient {
                 .path("refresh");
     }
 
+    @Step("Авторизация и получение токена")
+    public String loginAndGetAccessToken(LoginBodyModel loginBody) {
+        return given(loginRequestSpec)
+                .body(loginBody)
+                .when()
+                .post("/auth/token/")
+                .then()
+                .spec(successfulLoginResponseSpec)
+                .extract()
+                .path("access");
+    }
+
     public WrongCredentialsLoginResponseModel loginWrongCredentials(LoginBodyModel loginBody) {
         return given(loginRequestSpec)
                 .body(loginBody)

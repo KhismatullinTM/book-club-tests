@@ -1,6 +1,11 @@
 package tests;
 
+import models.clubs.ClubRequestModel;
+import net.datafaker.Faker;
+
 public class TestData {
+
+    private final Faker faker = new Faker();
 
     public static final String LOGIN_USERNAME = "user_1791600701072";
     public static final String LOGIN_PASSWORD = "pass_1791600701073";
@@ -26,5 +31,19 @@ public class TestData {
     public static final String UPDATE_FIRST_NAME = "Test";
     public static final String UPDATE_LAST_NAME = "User";
     public static final String UPDATE_EMAIL = "updated.user@example.com";
+    public static final String CLUB_TELEGRAM_LINK = "https://t.me/clean_code_club";
+
+    public static final int CLUBS_ID = 6398;
+
+    public ClubRequestModel newClubBody() {
+        return new ClubRequestModel(
+                "Club " + faker.book().title() + " " + faker.number().digits(6),
+                faker.book().author(),
+                faker.number().numberBetween(2000, 2026),
+                faker.lorem().paragraph(),
+                CLUB_TELEGRAM_LINK
+        );
+
+    }
 }
 

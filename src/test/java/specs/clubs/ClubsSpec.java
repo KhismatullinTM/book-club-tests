@@ -23,4 +23,47 @@ public class ClubsSpec {
             .expectBody("count", greaterThanOrEqualTo(0))
             .expectBody("results", notNullValue())
             .build();
+
+    public static ResponseSpecification successfulClubsByIdResponseSpec = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(200)
+            .expectBody(matchesJsonSchemaInClasspath(
+                    "schemas/clubs/get_clubs_by_id_response_schema.json"))
+            .expectBody("id", notNullValue())
+            .expectBody("bookTitle", notNullValue())
+            .expectBody("bookAuthors", notNullValue())
+            .expectBody("publicationYear", notNullValue())
+            .expectBody("description", notNullValue())
+            .expectBody("telegramChatLink", notNullValue())
+            .expectBody("owner", notNullValue())
+            .expectBody("members", notNullValue())
+            .expectBody("reviews", notNullValue())
+            .expectBody("created", notNullValue())
+            .build();
+
+    public static ResponseSpecification successfulFullUpdateClubByIdResponseSpec = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(200)
+            .expectBody(matchesJsonSchemaInClasspath(
+                    "schemas/clubs/get_clubs_by_id_response_schema.json"))
+            .expectBody("id", notNullValue())
+            .expectBody("bookTitle", notNullValue())
+            .expectBody("bookAuthors", notNullValue())
+            .expectBody("publicationYear", notNullValue())
+            .expectBody("description", notNullValue())
+            .expectBody("telegramChatLink", notNullValue())
+            .build();
+
+    public static ResponseSpecification successfulCreateClubResponseSpec = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(201)
+            .expectBody(matchesJsonSchemaInClasspath(
+                    "schemas/clubs/post_create_club_response_schema.json"))
+            .expectBody("id", notNullValue())
+            .expectBody("bookTitle", notNullValue())
+            .expectBody("bookAuthors", notNullValue())
+            .expectBody("publicationYear", notNullValue())
+            .expectBody("description", notNullValue())
+            .expectBody("telegramChatLink", notNullValue())
+            .build();
 }
