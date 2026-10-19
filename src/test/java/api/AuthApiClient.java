@@ -12,6 +12,7 @@ import static specs.logout.LogoutSpec.*;
 
 public class AuthApiClient {
 
+    @Step("Авторизация пользователя")
     public SuccessfulLoginResponseModel login(LoginBodyModel loginBody) {
         return given(loginRequestSpec)
                 .body(loginBody)
@@ -23,7 +24,7 @@ public class AuthApiClient {
                 .as(SuccessfulLoginResponseModel.class);
     }
 
-    @Step("Авторизация и получение токена")
+    @Step("Авторизация и получение refresh-токена")
     public String loginAndGetRefreshToken(LoginBodyModel loginBody) {
         return given(loginRequestSpec)
                 .body(loginBody)
@@ -35,7 +36,7 @@ public class AuthApiClient {
                 .path("refresh");
     }
 
-    @Step("Авторизация и получение токена")
+    @Step("Авторизация и получение access-токена")
     public String loginAndGetAccessToken(LoginBodyModel loginBody) {
         return given(loginRequestSpec)
                 .body(loginBody)
@@ -47,7 +48,9 @@ public class AuthApiClient {
                 .path("access");
     }
 
-    public WrongCredentialsLoginResponseModel loginWrongCredentials(LoginBodyModel loginBody) {
+    @Step("Попытка авторизации с неверными учётными данными")
+    public WrongCredentialsLoginResponseModel loginWrongCredentials(
+            LoginBodyModel loginBody) {
         return given(loginRequestSpec)
                 .body(loginBody)
                 .when()
@@ -58,7 +61,7 @@ public class AuthApiClient {
                 .as(WrongCredentialsLoginResponseModel.class);
     }
 
-    @Step("Отправка запроса logout")
+    @Step("Выход из системы")
     public void logout(LogoutBodyModel logoutBody) {
         given(logoutRequestSpec)
                 .body(logoutBody)
@@ -68,7 +71,9 @@ public class AuthApiClient {
                 .spec(successfulLogoutResponseSpec);
     }
 
-    public EmptyLoginCredentialLoginResponseModel loginEmptyCredentials(LoginBodyModel loginBody) {
+    @Step("Попытка авторизации с пустыми учётными данными")
+    public EmptyLoginCredentialLoginResponseModel loginEmptyCredentials(
+            LoginBodyModel loginBody) {
         return given(loginRequestSpec)
                 .body(loginBody)
                 .when()
@@ -79,7 +84,9 @@ public class AuthApiClient {
                 .as(EmptyLoginCredentialLoginResponseModel.class);
     }
 
-    public EmptyPasswordCredentialLoginResponseModel passwordEmptyCredentials(LoginBodyModel loginBody) {
+    @Step("Попытка авторизации с пустым паролем")
+    public EmptyPasswordCredentialLoginResponseModel passwordEmptyCredentials(
+            LoginBodyModel loginBody) {
         return given(loginRequestSpec)
                 .body(loginBody)
                 .when()
@@ -90,7 +97,9 @@ public class AuthApiClient {
                 .as(EmptyPasswordCredentialLoginResponseModel.class);
     }
 
-    public NotValidTokenResponseModel logoutWithInvalidToken(LogoutBodyModel logoutBody) {
+    @Step("Попытка выхода из системы с невалидным токеном")
+    public NotValidTokenResponseModel logoutWithInvalidToken(
+            LogoutBodyModel logoutBody) {
         return given(logoutRequestSpec)
                 .body(logoutBody)
                 .when()
@@ -101,7 +110,9 @@ public class AuthApiClient {
                 .as(NotValidTokenResponseModel.class);
     }
 
-    public EmptyRefreshTokenModel logoutWithEmptyRefreshToken(LogoutBodyModel logoutBody) {
+    @Step("Попытка выхода из системы с пустым refresh-токеном")
+    public EmptyRefreshTokenModel logoutWithEmptyRefreshToken(
+            LogoutBodyModel logoutBody) {
         return given(logoutRequestSpec)
                 .body(logoutBody)
                 .when()
@@ -112,4 +123,3 @@ public class AuthApiClient {
                 .as(EmptyRefreshTokenModel.class);
     }
 }
-

@@ -2,9 +2,7 @@ package api;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import models.clubs.ClubModel;
-import models.clubs.ClubRequestModel;
-import models.clubs.ClubsListResponseModel;
+import models.clubs.*;
 
 import static io.restassured.RestAssured.given;
 import static specs.clubs.ClubsSpec.*;
@@ -56,7 +54,21 @@ public class ClubsApiClient {
                 .when()
                 .put("/clubs/{id}/")
                 .then()
-                .spec(successfulClubsByIdResponseSpec)
+                .spec(successfulUpdateClubByIdResponseSpec)
+                .extract()
+                .as(ClubModel.class);
+    }
+
+    @Step("Частичное изменение данных клуба PATCH /clubs/{id}")
+    public ClubModel patchUpdateClubsById(int id, ClubPatchRequestModel body, String accessToken) {
+        return given(clubsRequestSpec)
+                .header("Authorization", "Bearer " + accessToken)
+                .pathParam("id", id)
+                .body(body)
+                .when()
+                .patch("/clubs/{id}/")
+                .then()
+                .spec(successfulUpdateClubByIdResponseSpec)
                 .extract()
                 .as(ClubModel.class);
     }
@@ -69,4 +81,19 @@ public class ClubsApiClient {
                 .when()
                 .delete("/clubs/{id}/");
     }
+
+    @Step("Полное изменение данных клуба без прав PUT /clubs/{id}")
+    public ClubForbiddenResponseModel forbiddenUpdateClubsById(int id, ClubRequestModel body, String accessToken) {
+        return given(clubsRequestSpec)
+                .header("Authorization", "Bearer " + accessToken)
+                .pathParam("id", id)
+                .body(body)
+                .when()
+                .patch("/clubs/{id}/")
+                .then()
+                .spec(forbiddenErrorResponseSpec)
+                .extract()
+                .as(ClubForbiddenResponseModel.class);
+    }
+
 }

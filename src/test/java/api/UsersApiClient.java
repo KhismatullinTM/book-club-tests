@@ -1,5 +1,6 @@
 package api;
 
+import io.qameta.allure.Step;
 import models.registration.*;
 import models.user.UpdateUserPatchBodyModel;
 import models.user.UpdateUserPatchResponseModel;
@@ -13,6 +14,7 @@ import static specs.registration.RegistrationSpec.*;
 
 public class UsersApiClient {
 
+    @Step("Регистрация нового пользователя")
     public SuccessfulRegistrationResponseModel register(RegistrationBodyModel body) {
         return given(registrationRequestSpec)
                 .body(body)
@@ -24,6 +26,7 @@ public class UsersApiClient {
                 .as(SuccessfulRegistrationResponseModel.class);
     }
 
+    @Step("Попытка регистрации уже существующего пользователя")
     public ExistingUserResponseModel registerExistingUser(RegistrationBodyModel body) {
         return given(registrationRequestSpec)
                 .body(body)
@@ -35,6 +38,7 @@ public class UsersApiClient {
                 .as(ExistingUserResponseModel.class);
     }
 
+    @Step("Регистрация пользователя с пустым именем")
     public EmptyUsernameRegistrationResponseModel registerWithEmptyUsername(
             RegistrationBodyModel body) {
         return given(registrationRequestSpec)
@@ -47,6 +51,7 @@ public class UsersApiClient {
                 .as(EmptyUsernameRegistrationResponseModel.class);
     }
 
+    @Step("Регистрация пользователя с пустым паролем")
     public EmptyPasswordRegistrationResponseModel registerWithEmptyPassword(
             RegistrationBodyModel body) {
         return given(registrationRequestSpec)
@@ -59,7 +64,9 @@ public class UsersApiClient {
                 .as(EmptyPasswordRegistrationResponseModel.class);
     }
 
-    public UpdateUserPutResponseModel putUpdateUser(UpdateUserPutBodyModel body, String accessToken) {
+    @Step("Полное обновление данных пользователя PUT /users/me/")
+    public UpdateUserPutResponseModel putUpdateUser(
+            UpdateUserPutBodyModel body, String accessToken) {
         return given(updateUserRequestSpec)
                 .header("Authorization", "Bearer " + accessToken)
                 .body(body)
@@ -71,7 +78,9 @@ public class UsersApiClient {
                 .as(UpdateUserPutResponseModel.class);
     }
 
-    public UpdateUserPatchResponseModel patchUpdateUser(UpdateUserPatchBodyModel body, String accessToken) {
+    @Step("Частичное обновление данных пользователя PATCH /users/me/")
+    public UpdateUserPatchResponseModel patchUpdateUser(
+            UpdateUserPatchBodyModel body, String accessToken) {
         return given(updateUserRequestSpec)
                 .header("Authorization", "Bearer " + accessToken)
                 .body(body)
@@ -82,5 +91,4 @@ public class UsersApiClient {
                 .extract()
                 .as(UpdateUserPatchResponseModel.class);
     }
-
 }

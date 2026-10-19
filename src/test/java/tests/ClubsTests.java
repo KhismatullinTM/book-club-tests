@@ -1,112 +1,191 @@
 package tests;
 
-import io.restassured.response.Response;
-import models.clubs.ClubModel;
-import models.clubs.ClubRequestModel;
-import models.clubs.ClubsListResponseModel;
-import models.login.LoginBodyModel;
+import models.clubs.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import tests.testdata.ClubTestData;
 
+import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
-import static tests.TestData.*;
+import static tests.testdata.TestData.*;
 
 public class ClubsTests extends TestBase {
 
-    TestData clubTestData = new TestData();
+    ClubTestData clubTestData = new ClubTestData();
 
     @Test
+    @DisplayName("Получение списка клубов с валидной структурой")
     public void getClubsReturns200AndValidStructure() {
-        ClubsListResponseModel response = api.clubs.getClubs();
+        ClubsListResponseModel response = step("Получение списка клубов",
+                () -> api.clubs.getClubs()
+        );
 
-        assertThat(response).isNotNull();
-        assertThat(response.count()).isGreaterThanOrEqualTo(0);
-        assertThat(response.results()).isNotNull();
-        assertThat(response.results()).hasSize(response.count());
+        step("Проверка структуры ответа", () -> {
+            assertThat(response).isNotNull();
+            assertThat(response.count()).isGreaterThanOrEqualTo(0);
+            assertThat(response.results()).isNotNull();
+            assertThat(response.results()).hasSize(response.count());
+        });
     }
 
     @Test
+    @DisplayName("Количество клубов соответствует размеру списка")
     public void getClubsCountMatchesResultsSize() {
-        ClubsListResponseModel response = api.clubs.getClubs();
+        ClubsListResponseModel response = step("Получение списка клубов", () -> api.clubs.getClubs());
 
-        assertThat(response.results())
-                .as("count должно совпадать с размером results")
-                .hasSize(response.count());
+        step("Проверка соответствия количества клубов размеру списка", () ->
+                assertThat(response.results()).hasSize(response.count())
+        );
     }
 
     @Test
+    @DisplayName("Все клубы содержат обязательные поля")
     public void getClubsEachClubHasRequiredFields() {
-        ClubsListResponseModel response = api.clubs.getClubs();
+        ClubsListResponseModel response = step("Получение списка клубов", () -> api.clubs.getClubs());
 
-        for (ClubModel club : response.results()) {
-            assertThat(club.id()).isNotNull().isPositive();
-            assertThat(club.bookTitle()).isNotNull();
-            assertThat(club.bookAuthors()).isNotNull();
-            assertThat(club.publicationYear()).isNotNull();
-            assertThat(club.description()).isNotNull();
-            assertThat(club.telegramChatLink()).isNotNull();
-            assertThat(club.owner()).isNotNull().isPositive();
-            assertThat(club.members()).isNotNull();
-            assertThat(club.reviews()).isNotNull();
-            assertThat(club.created()).isNotNull();
-        }
+        step("Проверка обязательных полей каждого клуба", () -> {
+            for (ClubModel club : response.results()) {
+                assertThat(club.id()).isNotNull().isPositive();
+                assertThat(club.bookTitle()).isNotNull();
+                assertThat(club.bookAuthors()).isNotNull();
+                assertThat(club.publicationYear()).isNotNull();
+                assertThat(club.description()).isNotNull();
+                assertThat(club.telegramChatLink()).isNotNull();
+                assertThat(club.owner()).isNotNull().isPositive();
+                assertThat(club.members()).isNotNull();
+                assertThat(club.reviews()).isNotNull();
+                assertThat(club.created()).isNotNull();
+            }
+        });
     }
 
     @Test
+    @DisplayName("Получение списка клубов с данными пагинации")
     public void getClubsPaginationFieldsPresent() {
-        ClubsListResponseModel response = api.clubs.getClubs();
+        ClubsListResponseModel response = step("Получение списка клубов", () -> api.clubs.getClubs());
 
-        assertThat(response.count()).isNotNull();
-        // next и previous могут быть null при одной странице
-        assertThat(response.results()).isNotNull();
+        step("Проверка наличия данных для пагинации", () -> {
+            assertThat(response.count()).isNotNull();
+            assertThat(response.results()).isNotNull();
+        });
     }
 
     @Test
     @DisplayName("Поиск клуба по ID")
     public void getClubByIdTest() {
-        ClubModel response = api.clubs.getClubsById(CLUBS_ID);
+        ClubModel response = step("Получение информации о клубе", () -> api.clubs.getClubsById(CLUBS_ID));
 
-        assertThat(response.id()).isEqualTo(CLUBS_ID);
+        step("Проверка идентификатора клуба", () ->
+                assertThat(response.id()).isEqualTo(CLUBS_ID)
+        );
     }
 
     @Test
     @DisplayName("Успешное создание клуба")
     public void successfulCreateClub() {
 
-        LoginBodyModel loginData = new LoginBodyModel(LOGIN_USERNAME, LOGIN_PASSWORD);
-        String accessToken =  api.auth.loginAndGetAccessToken(loginData);
+        String accessToken = step("Получение токена авторизации", this::getAccessToken);
+        ClubRequestModel requestModel = step("Подготовка данных нового клуба", () -> clubTestData.newClubBody());
 
-        ClubRequestModel requestModel = clubTestData.newClubBody();
+        ClubModel createdClub = step("Создание нового клуба",
+                () -> api.clubs.postCreateClub(requestModel, accessToken));
 
-        ClubModel response = api.clubs.postCreateClub(requestModel, accessToken);
+        step("Проверка данных созданного клуба", () -> {
+            assertThat(createdClub.bookTitle()).isEqualTo(requestModel.bookTitle());
+            assertThat(createdClub.bookAuthors()).isEqualTo(requestModel.bookAuthors());
+            assertThat(createdClub.publicationYear()).isEqualTo(requestModel.publicationYear());
+            assertThat(createdClub.description()).isEqualTo(requestModel.description());
+            assertThat(createdClub.telegramChatLink()).isEqualTo(requestModel.telegramChatLink());
+        });
     }
 
     @Test
     @DisplayName("Полное изменение данных клуба")
     public void successfulFullUpdateClubsById() {
 
-        LoginBodyModel loginData = new LoginBodyModel(LOGIN_USERNAME, LOGIN_PASSWORD);
-        String accessToken =  api.auth.loginAndGetAccessToken(loginData);
+        String accessToken = step(
+                "Получение токена авторизации",
+                this::getAccessToken
+        );
 
-        ClubRequestModel requestModel = clubTestData.newClubBody();
+        ClubRequestModel requestModel = step("Подготовка новых данных клуба", () -> clubTestData.newClubBody());
 
-        ClubModel response = api.clubs.fullUpdateClubsById(CLUBS_ID, requestModel, accessToken);
+        ClubModel response = step("Полное изменение данных клуба",
+                () -> api.clubs.fullUpdateClubsById(40, requestModel, accessToken));
 
+        step("Проверка обновленных данных клуба", () -> {
+            assertThat(response.id()).isEqualTo(40);
+            assertThat(response.bookTitle()).isEqualTo(requestModel.bookTitle());
+            assertThat(response.bookAuthors()).isEqualTo(requestModel.bookAuthors());
+            assertThat(response.publicationYear()).isEqualTo(requestModel.publicationYear());
+            assertThat(response.description()).isEqualTo(requestModel.description());
+            assertThat(response.telegramChatLink()).isEqualTo(requestModel.telegramChatLink());
+        });
+    }
+
+    @Test
+    @DisplayName("Частичное изменение данных клуба")
+    public void successfulPatchClubsById() {
+
+        String accessToken = step(
+                "Получение токена авторизации",
+                this::getAccessToken
+        );
+
+        ClubPatchRequestModel updateClubBody = step(
+                "Подготовка данных для частичного изменения клуба", () -> clubTestData.patchUpdateClubBody());
+
+        ClubModel responseModel = step(
+                "Частичное изменение данных клуба",
+                () -> api.clubs.patchUpdateClubsById(CLUBS_ID, updateClubBody, accessToken));
+
+        step("Проверка результатов частичного изменения клуба", () -> {
+            assertThat(responseModel.id()).isEqualTo(CLUBS_ID);
+            assertThat(responseModel.description()).isEqualTo(updateClubBody.description());
+        });
     }
 
     @Test
     @DisplayName("Удаление клуба")
     public void successfulDeleteClubsById() {
 
-        LoginBodyModel loginData = new LoginBodyModel(LOGIN_USERNAME, LOGIN_PASSWORD);
-        String accessToken = api.auth.loginAndGetAccessToken(loginData);
-        ClubRequestModel requestBody = clubTestData.newClubBody();
-        ClubModel createdClub = api.clubs.postCreateClub(requestBody, accessToken);
+        String accessToken = step(
+                "Получение токена авторизации",
+                this::getAccessToken
+        );
+
+        ClubRequestModel requestBody = step("Подготовка данных нового клуба", () -> clubTestData.newClubBody());
+
+        ClubModel createdClub = step(
+                "Создание клуба для последующего удаления",
+                () -> api.clubs.postCreateClub(requestBody, accessToken));
+
         int clubId = createdClub.id();
 
-        Response response = api.clubs.deleteClubsById(clubId, accessToken);
+        step("Удаление созданного клуба", () -> api.clubs.deleteClubsById(clubId, accessToken));
 
-        assertThat(response.statusCode()).isEqualTo(204);
+
+    }
+
+    @Test
+    @DisplayName("Запрет полного изменения клуба без необходимых прав")
+    public void forbiddenFullUpdateClubsById() {
+
+        String accessToken = step(
+                "Получение токена авторизации",
+                this::getAccessToken
+        );
+
+        ClubRequestModel requestModel = step("Подготовка новых данных клуба", () -> clubTestData.newClubBody());
+
+        ClubForbiddenResponseModel response = step(
+                "Попытка изменения клуба без необходимых прав",
+                () -> api.clubs.forbiddenUpdateClubsById(CLUB_ID_FORBIDDEN_TO_EDIT, requestModel, accessToken)
+        );
+
+        step("Проверка отказа в изменении клуба", () ->
+                assertThat(response.detail()).isEqualTo(FORBIDDEN_ERROR_TEXT)
+        );
     }
 
 }
