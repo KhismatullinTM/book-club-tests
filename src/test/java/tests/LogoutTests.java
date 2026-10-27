@@ -11,7 +11,7 @@ import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
 import static tests.testdata.TestData.*;
 
-@DisplayName("Тесты ")
+@DisplayName("Тесты выхода из аккаунта")
 public class LogoutTests extends TestBase {
 
     @Test
