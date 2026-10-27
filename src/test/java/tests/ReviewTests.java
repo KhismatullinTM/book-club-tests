@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static tests.testdata.PagesTestData.NO_REVIEW_MESSAGE;
 import static tests.testdata.TestData.*;
 
+@DisplayName("Тесты отзывов")
 public class ReviewTests extends TestBase {
 
     private final ReviewTestData reviewTestData = new ReviewTestData();
