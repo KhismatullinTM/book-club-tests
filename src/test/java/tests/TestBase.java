@@ -37,8 +37,12 @@ public class TestBase {
 
     @BeforeAll
     public static void setUp() {
-        RestAssured.baseURI = "https://book-club.qa.guru";
-        Configuration.baseUrl = "https://book-club.qa.guru";
+        RestAssured.baseURI = System.getProperty("API_URL", "https://book-club.qa.guru");
+        Configuration.baseUrl = System.getProperty("UI_URL", "https://book-club.qa.guru");
+        Configuration.browser = System.getProperty("BROWSER", "chrome");
+        Configuration.browserSize = System.getProperty("BROWSER_SIZE");
+        Configuration.browserVersion = System.getProperty("BROWSER_VERSION");
+        Configuration.headless = Boolean.parseBoolean(System.getProperty("HEADLESS", "false"));
 
         DesiredCapabilities capabilities = new DesiredCapabilities();
         ChromeOptions chromeOptions = new ChromeOptions();
