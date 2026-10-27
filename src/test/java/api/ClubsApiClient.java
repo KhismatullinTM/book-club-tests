@@ -21,7 +21,7 @@ public class ClubsApiClient {
     }
 
     @Step("Получение списка клубов GET /clubs/")
-    public ClubModel postCreateClub(ClubRequestModel body, String accessToken) {
+    public ClubResponseModel postCreateClub(ClubRequestModel body, String accessToken) {
         return given(clubsRequestSpec)
                 .header("Authorization", "Bearer " + accessToken)
                 .when()
@@ -30,11 +30,11 @@ public class ClubsApiClient {
                 .then()
                 .spec(successfulCreateClubResponseSpec)
                 .extract()
-                .as(ClubModel.class);
+                .as(ClubResponseModel.class);
     }
 
     @Step("Получение данных клуба GET /clubs/{id}")
-    public ClubModel getClubsById(int id) {
+    public ClubResponseModel getClubsById(int id) {
         return given(clubsRequestSpec)
                 .pathParam("id", id)
                 .when()
@@ -42,11 +42,11 @@ public class ClubsApiClient {
                 .then()
                 .spec(successfulClubsByIdResponseSpec)
                 .extract()
-                .as(ClubModel.class);
+                .as(ClubResponseModel.class);
     }
 
     @Step("Полное изменение данных клуба PUT /clubs/{id}")
-    public ClubModel fullUpdateClubsById(int id, ClubRequestModel body, String accessToken) {
+    public ClubResponseModel fullUpdateClubsById(int id, ClubRequestModel body, String accessToken) {
         return given(clubsRequestSpec)
                 .header("Authorization", "Bearer " + accessToken)
                 .pathParam("id", id)
@@ -56,11 +56,11 @@ public class ClubsApiClient {
                 .then()
                 .spec(successfulUpdateClubByIdResponseSpec)
                 .extract()
-                .as(ClubModel.class);
+                .as(ClubResponseModel.class);
     }
 
     @Step("Частичное изменение данных клуба PATCH /clubs/{id}")
-    public ClubModel patchUpdateClubsById(int id, ClubPatchRequestModel body, String accessToken) {
+    public ClubResponseModel patchUpdateClubsById(int id, ClubPatchRequestModel body, String accessToken) {
         return given(clubsRequestSpec)
                 .header("Authorization", "Bearer " + accessToken)
                 .pathParam("id", id)
@@ -70,7 +70,7 @@ public class ClubsApiClient {
                 .then()
                 .spec(successfulUpdateClubByIdResponseSpec)
                 .extract()
-                .as(ClubModel.class);
+                .as(ClubResponseModel.class);
     }
 
     @Step("Удаление клуба DELETE /clubs/{id}")

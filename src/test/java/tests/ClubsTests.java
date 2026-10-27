@@ -44,7 +44,7 @@ public class ClubsTests extends TestBase {
         ClubsListResponseModel response = step("Получение списка клубов", () -> api.clubs.getClubs());
 
         step("Проверка обязательных полей каждого клуба", () -> {
-            for (ClubModel club : response.results()) {
+            for (ClubResponseModel club : response.results()) {
                 assertThat(club.id()).isNotNull().isPositive();
                 assertThat(club.bookTitle()).isNotNull();
                 assertThat(club.bookAuthors()).isNotNull();
@@ -73,7 +73,7 @@ public class ClubsTests extends TestBase {
     @Test
     @DisplayName("Поиск клуба по ID")
     public void getClubByIdTest() {
-        ClubModel response = step("Получение информации о клубе", () -> api.clubs.getClubsById(CLUBS_ID));
+        ClubResponseModel response = step("Получение информации о клубе", () -> api.clubs.getClubsById(CLUBS_ID));
 
         step("Проверка идентификатора клуба", () ->
                 assertThat(response.id()).isEqualTo(CLUBS_ID)
@@ -87,7 +87,7 @@ public class ClubsTests extends TestBase {
         String accessToken = step("Получение токена авторизации", this::getAccessToken);
         ClubRequestModel requestModel = step("Подготовка данных нового клуба", () -> clubTestData.newClubBody());
 
-        ClubModel createdClub = step("Создание нового клуба",
+        ClubResponseModel createdClub = step("Создание нового клуба",
                 () -> api.clubs.postCreateClub(requestModel, accessToken));
 
         step("Проверка данных созданного клуба", () -> {
@@ -110,7 +110,7 @@ public class ClubsTests extends TestBase {
 
         ClubRequestModel requestModel = step("Подготовка новых данных клуба", () -> clubTestData.newClubBody());
 
-        ClubModel response = step("Полное изменение данных клуба",
+        ClubResponseModel response = step("Полное изменение данных клуба",
                 () -> api.clubs.fullUpdateClubsById(40, requestModel, accessToken));
 
         step("Проверка обновленных данных клуба", () -> {
@@ -135,7 +135,7 @@ public class ClubsTests extends TestBase {
         ClubPatchRequestModel updateClubBody = step(
                 "Подготовка данных для частичного изменения клуба", () -> clubTestData.patchUpdateClubBody());
 
-        ClubModel responseModel = step(
+        ClubResponseModel responseModel = step(
                 "Частичное изменение данных клуба",
                 () -> api.clubs.patchUpdateClubsById(CLUBS_ID, updateClubBody, accessToken));
 
@@ -156,7 +156,7 @@ public class ClubsTests extends TestBase {
 
         ClubRequestModel requestBody = step("Подготовка данных нового клуба", () -> clubTestData.newClubBody());
 
-        ClubModel createdClub = step(
+        ClubResponseModel createdClub = step(
                 "Создание клуба для последующего удаления",
                 () -> api.clubs.postCreateClub(requestBody, accessToken));
 

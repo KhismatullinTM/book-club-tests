@@ -29,9 +29,12 @@ public class TestData {
     public static final String UPDATE_EMAIL = "updated.user@example.com";
     public static final String CLUB_TELEGRAM_LINK = "https://t.me/clean_code_club";
 
-    public static final int CLUBS_ID = 6398;
+    public static final int CLUBS_ID = 6763;
     public static final int CLUB_ID_FORBIDDEN_TO_EDIT = 40;
     public static final String FORBIDDEN_ERROR_TEXT = "You do not have permission to perform this action";
-
+    public static final Integer NOT_FOUND_REVIEW_ID = 999;
+    public static final Integer VALID_REVIEW_ID = 1939;
+    public static final Integer FORBIDDEN_CLUB_ID = 2;
+    public static final Integer FORBIDDEN_REVIEW_ID = 1397;
 }
 

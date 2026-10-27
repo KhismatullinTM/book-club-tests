@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Модель клуба в ответе GET /clubs/.
  */
-public record ClubModel(
+public record ClubResponseModel(
         Integer id,
         String bookTitle,
         String bookAuthors,
