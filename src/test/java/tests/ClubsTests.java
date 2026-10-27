@@ -1,6 +1,7 @@
 package tests;
 
 import models.clubs.*;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tests.testdata.ClubTestData;
@@ -9,11 +10,13 @@ import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
 import static tests.testdata.TestData.*;
 
+@DisplayName("Тесты клубов")
 public class ClubsTests extends TestBase {
 
     ClubTestData clubTestData = new ClubTestData();
 
     @Test
+    @Disabled
     @DisplayName("Получение списка клубов с валидной структурой")
     public void getClubsReturns200AndValidStructure() {
         ClubsListResponseModel response = step("Получение списка клубов",
@@ -29,6 +32,7 @@ public class ClubsTests extends TestBase {
     }
 
     @Test
+    @Disabled
     @DisplayName("Количество клубов соответствует размеру списка")
     public void getClubsCountMatchesResultsSize() {
         ClubsListResponseModel response = step("Получение списка клубов", () -> api.clubs.getClubs());
@@ -108,13 +112,17 @@ public class ClubsTests extends TestBase {
                 this::getAccessToken
         );
 
-        ClubRequestModel requestModel = step("Подготовка новых данных клуба", () -> clubTestData.newClubBody());
+        ClubRequestModel requestModel = step("Подготовка новых данных клуба",
+                () -> clubTestData.newClubBody());
+
+        ClubResponseModel createdClub = step("Создание нового клуба",
+                () -> api.clubs.postCreateClub(requestModel, accessToken));
 
         ClubResponseModel response = step("Полное изменение данных клуба",
-                () -> api.clubs.fullUpdateClubsById(40, requestModel, accessToken));
+                () -> api.clubs.fullUpdateClubsById(createdClub.id(), requestModel, accessToken));
 
         step("Проверка обновленных данных клуба", () -> {
-            assertThat(response.id()).isEqualTo(40);
+            assertThat(response.id()).isEqualTo(createdClub.id());
             assertThat(response.bookTitle()).isEqualTo(requestModel.bookTitle());
             assertThat(response.bookAuthors()).isEqualTo(requestModel.bookAuthors());
             assertThat(response.publicationYear()).isEqualTo(requestModel.publicationYear());

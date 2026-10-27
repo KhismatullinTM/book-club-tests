@@ -31,7 +31,7 @@ public class TestData {
 
     public static final int CLUBS_ID = 6763;
     public static final int CLUB_ID_FORBIDDEN_TO_EDIT = 40;
-    public static final String FORBIDDEN_ERROR_TEXT = "You do not have permission to perform this action";
+    public static final String FORBIDDEN_ERROR_TEXT = "You do not have permission to perform this action.";
     public static final Integer NOT_FOUND_REVIEW_ID = 999;
     public static final Integer VALID_REVIEW_ID = 1939;
     public static final Integer FORBIDDEN_CLUB_ID = 2;

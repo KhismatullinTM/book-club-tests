@@ -15,6 +15,7 @@ import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
 import static tests.testdata.TestData.*;
 
+@DisplayName("Тесты обновления данных пользователя")
 public class UpdateUserTests extends TestBase {
 
     private String username;
