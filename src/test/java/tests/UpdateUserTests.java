@@ -59,9 +59,7 @@ public class UpdateUserTests extends TestBase {
                 )
         );
 
-        UpdateUserPutResponseModel updateUserResponse = step("Полное обновление данных пользователя (PUT)", () ->
-                api.users.putUpdateUser(updateUserBodyModel, accessToken)
-        );
+        UpdateUserPutResponseModel updateUserResponse = api.users.putUpdateUser(updateUserBodyModel, accessToken);
 
         step("Проверка обновлённых данных пользователя", () -> {
             assertThat(updateUserResponse.id()).isGreaterThan(0);
@@ -80,9 +78,7 @@ public class UpdateUserTests extends TestBase {
                 new UpdateUserPatchBodyModel(UPDATE_FIRST_NAME)
         );
 
-        UpdateUserPatchResponseModel updateUserResponse = step("Частичное обновление данных пользователя (PATCH)", () ->
-                api.users.patchUpdateUser(updateUserBodyModel, accessToken)
-        );
+        UpdateUserPatchResponseModel updateUserResponse = api.users.patchUpdateUser(updateUserBodyModel, accessToken);
 
         step("Проверка обновлённого имени пользователя", () -> {
             assertThat(updateUserResponse.firstName()).isEqualTo(UPDATE_FIRST_NAME);

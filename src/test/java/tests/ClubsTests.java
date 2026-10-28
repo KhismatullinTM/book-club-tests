@@ -13,15 +13,13 @@ import static tests.testdata.TestData.*;
 @DisplayName("Тесты клубов")
 public class ClubsTests extends TestBase {
 
-    ClubTestData clubTestData = new ClubTestData();
+    private final ClubTestData clubTestData = new ClubTestData();
 
     @Test
     @Disabled
     @DisplayName("Получение списка клубов с валидной структурой")
     public void getClubsReturns200AndValidStructure() {
-        ClubsListResponseModel response = step("Получение списка клубов",
-                () -> api.clubs.getClubs()
-        );
+        ClubsListResponseModel response = api.clubs.getClubs();
 
         step("Проверка структуры ответа", () -> {
             assertThat(response).isNotNull();
@@ -35,7 +33,7 @@ public class ClubsTests extends TestBase {
     @Disabled
     @DisplayName("Количество клубов соответствует размеру списка")
     public void getClubsCountMatchesResultsSize() {
-        ClubsListResponseModel response = step("Получение списка клубов", () -> api.clubs.getClubs());
+        ClubsListResponseModel response = api.clubs.getClubs();
 
         step("Проверка соответствия количества клубов размеру списка", () ->
                 assertThat(response.results()).hasSize(response.count())
@@ -45,7 +43,7 @@ public class ClubsTests extends TestBase {
     @Test
     @DisplayName("Все клубы содержат обязательные поля")
     public void getClubsEachClubHasRequiredFields() {
-        ClubsListResponseModel response = step("Получение списка клубов", () -> api.clubs.getClubs());
+        ClubsListResponseModel response = api.clubs.getClubs();
 
         step("Проверка обязательных полей каждого клуба", () -> {
             for (ClubResponseModel club : response.results()) {
@@ -66,7 +64,7 @@ public class ClubsTests extends TestBase {
     @Test
     @DisplayName("Получение списка клубов с данными пагинации")
     public void getClubsPaginationFieldsPresent() {
-        ClubsListResponseModel response = step("Получение списка клубов", () -> api.clubs.getClubs());
+        ClubsListResponseModel response = api.clubs.getClubs();
 
         step("Проверка наличия данных для пагинации", () -> {
             assertThat(response.count()).isNotNull();
@@ -77,7 +75,7 @@ public class ClubsTests extends TestBase {
     @Test
     @DisplayName("Поиск клуба по ID")
     public void getClubByIdTest() {
-        ClubResponseModel response = step("Получение информации о клубе", () -> api.clubs.getClubsById(CLUBS_ID));
+        ClubResponseModel response = api.clubs.getClubsById(CLUBS_ID);
 
         step("Проверка идентификатора клуба", () ->
                 assertThat(response.id()).isEqualTo(CLUBS_ID)
@@ -87,12 +85,11 @@ public class ClubsTests extends TestBase {
     @Test
     @DisplayName("Успешное создание клуба")
     public void successfulCreateClub() {
+        String accessToken = getAccessToken();
 
-        String accessToken = step("Получение токена авторизации", this::getAccessToken);
-        ClubRequestModel requestModel = step("Подготовка данных нового клуба", () -> clubTestData.newClubBody());
+        ClubRequestModel requestModel = clubTestData.newClubBody();
 
-        ClubResponseModel createdClub = step("Создание нового клуба",
-                () -> api.clubs.postCreateClub(requestModel, accessToken));
+        ClubResponseModel createdClub = api.clubs.postCreateClub(requestModel, accessToken);
 
         step("Проверка данных созданного клуба", () -> {
             assertThat(createdClub.bookTitle()).isEqualTo(requestModel.bookTitle());
@@ -106,20 +103,18 @@ public class ClubsTests extends TestBase {
     @Test
     @DisplayName("Полное изменение данных клуба")
     public void successfulFullUpdateClubsById() {
+        String accessToken = getAccessToken();
 
-        String accessToken = step(
-                "Получение токена авторизации",
-                this::getAccessToken
-        );
+        ClubRequestModel requestModel = clubTestData.newClubBody();
 
-        ClubRequestModel requestModel = step("Подготовка новых данных клуба",
-                () -> clubTestData.newClubBody());
+        ClubResponseModel createdClub = api.clubs.postCreateClub(requestModel, accessToken);
 
-        ClubResponseModel createdClub = step("Создание нового клуба",
-                () -> api.clubs.postCreateClub(requestModel, accessToken));
-
-        ClubResponseModel response = step("Полное изменение данных клуба",
-                () -> api.clubs.fullUpdateClubsById(createdClub.id(), requestModel, accessToken));
+        ClubResponseModel response =
+                api.clubs.fullUpdateClubsById(
+                        createdClub.id(),
+                        requestModel,
+                        accessToken
+                );
 
         step("Проверка обновленных данных клуба", () -> {
             assertThat(response.id()).isEqualTo(createdClub.id());
@@ -134,18 +129,17 @@ public class ClubsTests extends TestBase {
     @Test
     @DisplayName("Частичное изменение данных клуба")
     public void successfulPatchClubsById() {
+        String accessToken = getAccessToken();
 
-        String accessToken = step(
-                "Получение токена авторизации",
-                this::getAccessToken
-        );
+        ClubPatchRequestModel updateClubBody =
+                clubTestData.patchUpdateClubBody();
 
-        ClubPatchRequestModel updateClubBody = step(
-                "Подготовка данных для частичного изменения клуба", () -> clubTestData.patchUpdateClubBody());
-
-        ClubResponseModel responseModel = step(
-                "Частичное изменение данных клуба",
-                () -> api.clubs.patchUpdateClubsById(CLUBS_ID, updateClubBody, accessToken));
+        ClubResponseModel responseModel =
+                api.clubs.patchUpdateClubsById(
+                        CLUBS_ID,
+                        updateClubBody,
+                        accessToken
+                );
 
         step("Проверка результатов частичного изменения клуба", () -> {
             assertThat(responseModel.id()).isEqualTo(CLUBS_ID);
@@ -156,44 +150,34 @@ public class ClubsTests extends TestBase {
     @Test
     @DisplayName("Удаление клуба")
     public void successfulDeleteClubsById() {
+        String accessToken = getAccessToken();
 
-        String accessToken = step(
-                "Получение токена авторизации",
-                this::getAccessToken
-        );
+        ClubRequestModel requestBody = clubTestData.newClubBody();
 
-        ClubRequestModel requestBody = step("Подготовка данных нового клуба", () -> clubTestData.newClubBody());
-
-        ClubResponseModel createdClub = step(
-                "Создание клуба для последующего удаления",
-                () -> api.clubs.postCreateClub(requestBody, accessToken));
+        ClubResponseModel createdClub =
+                api.clubs.postCreateClub(requestBody, accessToken);
 
         int clubId = createdClub.id();
 
-        step("Удаление созданного клуба", () -> api.clubs.deleteClubsById(clubId, accessToken));
-
-
+        api.clubs.deleteClubsById(clubId, accessToken);
     }
 
     @Test
     @DisplayName("Запрет полного изменения клуба без необходимых прав")
     public void forbiddenFullUpdateClubsById() {
+        String accessToken = getAccessToken();
 
-        String accessToken = step(
-                "Получение токена авторизации",
-                this::getAccessToken
-        );
+        ClubRequestModel requestModel = clubTestData.newClubBody();
 
-        ClubRequestModel requestModel = step("Подготовка новых данных клуба", () -> clubTestData.newClubBody());
-
-        ClubForbiddenResponseModel response = step(
-                "Попытка изменения клуба без необходимых прав",
-                () -> api.clubs.forbiddenUpdateClubsById(CLUB_ID_FORBIDDEN_TO_EDIT, requestModel, accessToken)
-        );
+        ClubForbiddenResponseModel response =
+                api.clubs.forbiddenUpdateClubsById(
+                        CLUB_ID_FORBIDDEN_TO_EDIT,
+                        requestModel,
+                        accessToken
+                );
 
         step("Проверка отказа в изменении клуба", () ->
                 assertThat(response.detail()).isEqualTo(FORBIDDEN_ERROR_TEXT)
         );
     }
-
 }
