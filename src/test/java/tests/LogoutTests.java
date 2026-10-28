@@ -17,54 +17,66 @@ public class LogoutTests extends TestBase {
     @Test
     @DisplayName("Успешный выход из системы")
     public void successfulLogoutTest() {
+        LogoutBodyModel logoutData = step(
+                "Подготовка данных для выхода из системы",
+                () -> {
+                    LoginBodyModel loginData =
+                            new LoginBodyModel(LOGIN_USERNAME, LOGIN_PASSWORD);
 
-        LogoutBodyModel logoutData  = step("Подготовка данных для выхода из системы", ()-> {
-            LoginBodyModel loginData = new LoginBodyModel(LOGIN_USERNAME, LOGIN_PASSWORD);
-            String refreshToken =  api.auth.loginAndGetRefreshToken(loginData);
-            return new LogoutBodyModel(refreshToken);
-        });
+                    String refreshToken =
+                            api.auth.loginAndGetRefreshToken(loginData);
 
-        step("Выход из системы", ()-> api.auth.logout(logoutData));
+                    return new LogoutBodyModel(refreshToken);
+                }
+        );
+
+        api.auth.logout(logoutData);
     }
 
     @Test
     @DisplayName("Повторный выход из системы")
     public void repeatedLogoutTest() {
-        LogoutBodyModel logoutData = step("Подготовка данных для выхода из системы", () -> {
-            LoginBodyModel loginData = new LoginBodyModel(LOGIN_USERNAME, LOGIN_PASSWORD);
-            String refreshToken = api.auth.loginAndGetRefreshToken(loginData);
-            return new LogoutBodyModel(refreshToken);
-        });
+        LogoutBodyModel logoutData = step(
+                "Подготовка данных для выхода из системы",
+                () -> {
+                    LoginBodyModel loginData =
+                            new LoginBodyModel(LOGIN_USERNAME, LOGIN_PASSWORD);
 
-        step("Первый выход из системы", () -> api.auth.logout(logoutData));
+                    String refreshToken =
+                            api.auth.loginAndGetRefreshToken(loginData);
 
-        NotValidTokenResponseModel response = step("Повторная попытка выхода из системы", () ->
-                api.auth.logoutWithInvalidToken(logoutData)
+                    return new LogoutBodyModel(refreshToken);
+                }
         );
+
+        api.auth.logout(logoutData);
+
+        NotValidTokenResponseModel response =
+                api.auth.logoutWithInvalidToken(logoutData);
 
         step("Проверка ответа при повторном выходе", () -> {
             assertThat(response.detail()).isNotBlank();
             assertThat(response.code()).isNotBlank();
         });
-
     }
 
     @Test
     @DisplayName("Выход из системы с пустым refresh-токеном")
     public void logoutWithEmptyRefreshTokenTest() {
-        LogoutBodyModel logoutData = step("Подготовка данных для выхода из системы", () ->
-                new LogoutBodyModel("")
+        LogoutBodyModel logoutData = step(
+                "Подготовка данных для выхода из системы",
+                () -> new LogoutBodyModel("")
         );
 
-        EmptyRefreshTokenModel emptyTokenResponse = step("Попытка выхода с пустым refresh-токеном", () ->
-                api.auth.logoutWithEmptyRefreshToken(logoutData)
-        );
+        EmptyRefreshTokenModel emptyTokenResponse =
+                api.auth.logoutWithEmptyRefreshToken(logoutData);
 
         step("Проверка ответа при пустом refresh-токене", () -> {
-            String expectedEmptyRefreshTokenError = EXPECTED_EMPTY_CREDENTIAL_ERROR;
-            String actualEmptyRefreshTokenError = emptyTokenResponse.refresh().get(0);
+            String actualEmptyRefreshTokenError =
+                    emptyTokenResponse.refresh().get(0);
+
             assertThat(actualEmptyRefreshTokenError)
-                    .isEqualTo(expectedEmptyRefreshTokenError);
+                    .isEqualTo(EXPECTED_EMPTY_CREDENTIAL_ERROR);
         });
     }
 }
